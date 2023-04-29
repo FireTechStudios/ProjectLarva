@@ -63,7 +63,6 @@ jobs:
         with:
           targetPlatform:  ${{ matrix.targetPlatform }}
           versioning: Semantic
-          customImage: 'unityci/editor:2021.3.18f1-base-1.0'
 
       # Output
       - uses: actions/upload-artifact@v2
