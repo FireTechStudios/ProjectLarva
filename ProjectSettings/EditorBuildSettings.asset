@@ -7,10 +7,13 @@ EditorBuildSettings:
   m_Scenes:
   - enabled: 0
     path: 
-    guid: 99c9720ab356a0642a771bea13969a05
-  - enabled: 1
+    guid: 00000000000000000000000000000000
+  - enabled: 0
     path: Assets/ThirdParty/SyntyStudios/PolygonStarter/Scenes/Demo.unity
     guid: 5215016c20f88ea498985ac3e0ab4f9d
+  - enabled: 1
+    path: Assets/_Project/Scenes/Demo.unity
+    guid: cc6858c385f2d9643b7ae93bd14d8f3c
   m_configObjects:
     com.unity.input.settings: {fileID: 11400000, guid: 0bb5b3d4904c39b41a996a56dc7eaa8d,
       type: 2}
