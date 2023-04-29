@@ -84,7 +84,7 @@ jobs:
         uses: actions/download-artifact@v3
         with:
           name: Build-WebGL
-          path: build/WebGL
+          path: build
 
       - name: Deploy to Gihub Pages 🚀
         id: deployment
