@@ -1,11 +1,18 @@
 name: Build ⚒️
 
-on: [pull_request]
+on: [push, pull_request]
 
 jobs:
-  build:
+  buildForWebGL:
     name: Build WebGL Project ⚒️
     runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        targetPlatform:
+          - WebGL # Build for WebGL
+    outputs:
+      buildVersion: ${{ steps.build.outputs.buildVersion }}
     steps:
       # Checkout without LFS
       - name: Checkout repository
@@ -32,8 +39,11 @@ jobs:
       - uses: actions/cache@v3
         with:
           path: Library
-          key: Library-${{ hashFiles('Assets/**', 'Packages/**', 'ProjectSettings/**') }}
+          key:
+            Library-${{ matrix.targetPlatform }}-${{ hashFiles('Assets/**', 'Packages/**',
+            'ProjectSettings/**') }}
           restore-keys: |
+            Library-${{ matrix.targetPlatform }}-
             Library-
 
       # # Test
@@ -46,21 +56,40 @@ jobs:
 
       # Build
       - name: Build project
+        id: build
         uses: game-ci/unity-builder@v3
         env:
           UNITY_LICENSE: ${{ secrets.UNITY_LICENSE }}
-          UNITY_EMAIL: ${{ secrets.UNITY_EMAIL }}
-          UNITY_PASSWORD: ${{ secrets.UNITY_PASSWORD }}
         with:
-          targetPlatform: WebGL
-          customImage: 'unityci/editor:2021.3.18f1-base-0'
+          targetPlatform:  ${{ matrix.targetPlatform }}
+          versioning: Semantic
+          customImage: 'unityci/editor:2021.3.18f1-base-1.0'
 
       # Output
-      - uses: actions/upload-artifact@v3
+      - uses: actions/upload-artifact@v2
         with:
-          name: Build
-          path: builds/WebGL
-  deploy:
+          name: Build-${{ matrix.targetPlatform }}
+          path: build/${{ matrix.targetPlatform }}
+  deployToGithubPages:
+    needs: [buildForWebGL]
     name: Deploy to Github Pages 📃
+    concurrency: ci-${{ github.ref }}
     runs-on: ubuntu-latest
     steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v3
+        with:
+          fetch-depth: 0
+
+      - name: Download WebGL Artifact
+        uses: actions/download-artifact@v3
+        with:
+          name: Build-WebGL
+          path: build/WebGL
+
+      - name: Deploy to Gihub Pages 🚀
+        id: deployment
+        uses: JamesIves/github-pages-deploy-action@v4
+        with:
+          branch: gh-pages
+          folder: build/WebGL
