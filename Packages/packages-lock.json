@@ -1,11 +1,4 @@
 {
-  "dependencies": {
-    "com.firetechstudios.tools": {
-      "version": "file:F:/Developer/Unity/Unity Packages/Tools",
-      "depth": 0,
-      "source": "local",
-      "dependencies": {}
-    },
     "com.unity.burst": {
       "version": "1.8.2",
       "depth": 1,
